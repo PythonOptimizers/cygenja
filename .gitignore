@@ -1,0 +1,12 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+/build/*
+/.idea/*
+/.tox/*
+/doc/build/*
+/*.egg-info
+/dist
