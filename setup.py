@@ -4,6 +4,9 @@ version = '0.1.0'
 
 from distutils.core import setup
 
+from codecs import open
+from os import path
+
 packages_list = ['cygenja',
                  'tests']
 
@@ -21,10 +24,15 @@ Operating System :: MacOS :: MacOS X
 Natural Language :: English
 """
 
+here = path.abspath(path.dirname(__file__))
+# Get the long description from the relevant file
+with open(path.join(here, 'DESCRIPTION.rst'), encoding='utf-8') as f:
+    long_description = f.read()
+
 setup(name=  'cygenja',
       version=version,
       description='Cython code generator with Jinja2',
-      #long_description=long_description,
+      long_description=long_description,
       #Author details
       author='Nikolaj van Omme, Sylvain Arreckx, Dominique Orban',
 
