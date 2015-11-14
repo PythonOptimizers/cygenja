@@ -1,6 +1,12 @@
 Changelog for cygenja
 ======================
 
+0.1.3 (unreleased)
+------------------
+
+- Nothing changed yet.
+
+
 0.1.2 (2015-11-14)
 ------------------
 
