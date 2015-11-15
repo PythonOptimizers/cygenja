@@ -113,7 +113,7 @@ class TreeMap(object):
         Create an entry located at ``location``.
         
         Args:
-            location: String or :class:`LocationDescriptor` to describe a "dot location" (i.e. dir1/dir2/dir3 for
+            location: String or :class:`LocationDescriptor` to describe a "separator location" (i.e. dir1/dir2/dir3 for
                 instance).
             element: Element to store at the location.
             unique: ``True`` means that the element to store **must** be unique and that the corresponding node doesn't already exist.
@@ -187,7 +187,7 @@ class TreeMap(object):
         Create an entry located at ``location``.
         
         Args:
-            location: String or :class:`LocationDescriptor` to describe a "dot location" (i.e. dir1.dir2.dir3 for
+            location: String or :class:`LocationDescriptor` to describe a "separator location" (i.e. dir1/dir2/dir3 for
                 instance).
             element: Element to store.
         
@@ -205,7 +205,7 @@ class TreeMap(object):
         Create an entry located at ``location``.
         
         Args:
-            location: String or :class:`LocationDescriptor` to describe a "dot location" (i.e. dir1.dir2.dir3 for
+            location: String or :class:`LocationDescriptor` to describe a "separator location" (i.e. dir1/dir2/dir3 for
                 instance).
             element: Element to store.
             delete_elem: Delete old element or not if it exist?
