@@ -227,7 +227,16 @@ class LocationDescriptor(object):
         if not isinstance(other, LocationDescriptor):
             return False
 
-        return self.to_string() == other.to_string()
+        nbr_of_sub_locations = self.nbr_of_sub_locations()
+
+        if nbr_of_sub_locations != other.nbr_of_sub_locations():
+            return False
+
+        for i in range(nbr_of_sub_locations):
+            if self._locations_list[i] != other._locations_list[i]:
+                return False
+
+        return True
 
     def to_string(self, other_separation_char=None):
         """

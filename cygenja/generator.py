@@ -1,6 +1,7 @@
 from jinja2 import Environment, FileSystemLoader
 import os
 import glob
+import fnmatch
 
 from cygenja.filters.type_filters import *
 from cygenja.helpers.file_helpers import find_files
@@ -10,13 +11,26 @@ from cygenja.treemap.treemap import TreeMap
 class GeneratorAction(object):
     def __init__(self, file_pattern, action_function):
         """
+        Container to store an "action".
+
+        Every generation is considered as an action.
+
+        Args:
+            file_pattern: fnmatch pattern.
+            action_function: Callback. See documentation.
         """
         super(GeneratorAction, self).__init__()
         self.__file_pattern = file_pattern
         self.__action_function = action_function
 
     def run(self):
-        yield self.__action_function()
+        return self.__action_function()
+
+    def action_function_name(self):
+        return self.__action_function.__name__
+
+    def act_on_file(self, filename):
+        return fnmatch.fnmatch(filename, self.__file_pattern)
 
 
 class Generator(object):
@@ -44,7 +58,7 @@ class Generator(object):
         if not os.path.isdir(directory):
             self.log_error('Main directory \'%s\' does not exists!' % directory)
 
-        self.__directory = os.path.abspath(directory)   # main base directory
+        self.__root_directory = os.path.abspath(directory)   # main base directory
         self.__jinja2_environment = Environment(autoescape=False,
                                                 loader=FileSystemLoader('/'), # we use absolute filenames
                                                 trim_blocks=False,
@@ -57,6 +71,8 @@ class Generator(object):
 
         self.__extensions = {}
         self.__actions = TreeMap()
+
+        self.__default_action = None
 
     ###########################################################################
     # LOGGING
@@ -223,7 +239,7 @@ class Generator(object):
             action:
 
         """
-
+        self.__actions.add_unique_element(relative_directory, action)
 
 
 
@@ -235,6 +251,37 @@ class Generator(object):
             relative_directory:
 
         """
+        return self.__actions.retrieve_element_or_default(relative_directory)
+
+    def __is_function_action(self, action_function):
+        """
+        Detect if given function is really an action function.
+
+        Args:
+            action_function: Function to test.
+
+        Note:
+            We don't care if variable is a function but rather if it is callable or not.
+
+        """
+        # test if function returns a couple of values
+        is_function_action = True
+
+        if not hasattr(action_function, '__call__'):
+            return False
+
+        # OK, callable. Do we receive the right arguments?
+        try:
+            for end_string, context in action_function():
+                if not isinstance(end_string, basestring):
+                    self.log_error("Action function must return end of filename as a string as first argument")
+                if not isinstance(context, dict):
+                    self.log_error("Action function must return context as a dict as second argument")
+                break
+        except Exception:
+            is_function_action = False
+
+        return is_function_action
 
     def register_action(self, relative_directory, file_pattern, action_function):
         """
@@ -247,27 +294,29 @@ class Generator(object):
 
         """
         # test if directory exists
-        if not os.path.isdir(os.path.join(self.__directory, relative_directory)):
+        if not os.path.isdir(os.path.join(self.__root_directory, relative_directory)):
             self.log_error('Relative directory \'%s\' does not exist.' % relative_directory)
             return
 
-        # test if function returns a couple of values
-        try:
-            for end_string, context in action_function():
-                if not isinstance(end_string, basestring):
-                    raise RuntimeError
-                if not isinstance(context, dict):
-                    raise RuntimeError
-                break
-        except Exception:
-            self.log_error('Attached function is not an action function.')
+        if not self.__is_function_action(action_function):
+                self.log_error('Attached function is not an action function.')
 
         self.__add_action(relative_directory, GeneratorAction(file_pattern, action_function))
+
+    def register_default_action(self, file_pattern,  action_function):
+
+        if self.__default_action is not None:
+            self.log_error('Default action function already exist.')
+
+        if not self.__is_function_action(action_function):
+            self.log_error('Attached default function is not an action function.')
+
+        self.__default_action = GeneratorAction(file_pattern=file_pattern, action_function=action_function)
 
     ###########################################################################
     # FILE GENERATION
     ###########################################################################
-    def __generate_file(self, template_filename, context, end_ext, force=False):
+    def __generate_file(self, template_filename, context, generated_filename, force=False):
         """
         Generate **one** (source code) file from a template.
 
@@ -277,36 +326,21 @@ class Generator(object):
         Args:
             template_filename (str): **Absolute** filename of a template file to translate.
             context (dict): Dictionary with ``(key, val)`` replacements.
-            end_ext (str): End extension to add to the generated file filename. For instance '_X_Y.z'.
+            generated_filename (str): **Absolute** filename of the generated file filename.
             force (bool): If set to ``True``, file is generated no matter what.
 
 
         """
-        base_path, base_filename = os.path.split(template_filename)
-        base_filename_without_extension, ext = os.path.splitext(base_filename)
-
-        generated_filename = base_filename_without_extension + '%s' % end_ext
-        generated_filename_path = os.path.join(base_path, generated_filename)
         # test if file is non existing or needs to be regenerated
-        if force or (not os.path.isfile(generated_filename_path) or os.stat(template_filename).st_mtime - os.stat(generated_filename_path).st_mtime > 1):
+        if force or (not os.path.isfile(generated_filename) or os.stat(template_filename).st_mtime - os.stat(generated_filename).st_mtime > 1):
             self.log_info('   Parsing file %s' % template_filename)
             code_generated = self.__jinja2_environment.get_template(template_filename).render(context)
 
-            with open(generated_filename_path, 'w') as f:
-                self.log_info('   Generating file %s' % generated_filename_path)
+            with open(generated_filename, 'w') as f:
+                self.log_info('   Generating file %s' % generated_filename)
                 f.write(code_generated)
 
-    # TODO: do we keep this method?
-    def __generate_files_list(self, directory,  glob_pattern):
-        """
-        Return/generate a list of **absolute** filenames
-        :param glob_pattern:
-        """
-    # TODO: erase this temp method
-    def generate_file(self, template_filename, context, end_ext, force=False):
-        self.__generate_file(template_filename, context, end_ext, force)
-
-    def generate(self, dir_pattern, file_pattern, action='g', recursively=False):
+    def generate(self, dir_pattern, file_pattern, action_ch='g', recursively=False, force=False):
         """
         Main method to generate (source code) files from templates.
 
@@ -322,13 +356,58 @@ class Generator(object):
             recursively: Do we do the actions in the sub-directories? Note that in this case **only** the file pattern applies.
 
         """
-        directories = [os.path.abspath(directory) for directory in glob.glob(os.path.join(self.__directory, dir_pattern)) if os.path.isdir(directory)]
+        # directories to visit
+        # using heavy machinery to extract absolute cleaned paths... to avoid any problem...
+        directories = [os.path.abspath(directory) for directory in glob.glob(os.path.join(self.__root_directory, dir_pattern)) if os.path.isdir(directory)]
+
+        # list of extensions
+        extensions = self.__extensions.keys()
+
+        print extensions
+
         for directory in directories:
             for b, f in find_files(directory, file_pattern, recursively=recursively):
                 print b + ': ' + f
-                if action == 'd':
-                    pass
-                elif action == 'g':
-                    pass
-                elif action == 'd':
-                    pass
+                print '=' * 30
+                # test if some template files can be processed
+                file_basename, file_ext = os.path.splitext(f)
+                print "ext: " + file_ext
+                if file_ext in extensions:
+                    print "we can potentially process this file"
+                    # try to find corresponding action
+                    rel_path = os.path.relpath(os.path.join(b,f), self.__root_directory)
+                    rel_basename, rel_filename = os.path.split(rel_path)
+                    rel_filename_without_ext, rel_ext = os.path.splitext(rel_filename)
+
+                    # template absolute filename
+                    in_file_name = os.path.join(b, f)
+
+                    action = self.__actions.retrieve_element_or_default(rel_basename, None)
+
+                    # is there a default action?
+                    if action is None:
+                        action = self.__default_action
+
+                    if action and action.act_on_file(f):
+                        # test if action is compatible with file
+                        
+                        if action_ch == 'd':
+                            print "Process file '%s' with function '%s':" % (rel_path, action.action_function_name())
+                        for filename_end, context in action.run():
+                            # generated absolute file name
+                            out_file_name = os.path.join(b, rel_filename_without_ext + filename_end + self.__extensions[file_ext])
+                            if action_ch == 'g':
+                                print " IN: %s" % in_file_name
+                                print "OUT: %s" % out_file_name
+                                self.__generate_file(template_filename=in_file_name, context=context, generated_filename=out_file_name, force=force)
+                            elif action_ch == 'e':
+                                print "delete: %s" % out_file_name
+                                try:
+                                    os.remove(out_file_name)
+                                except OSError:
+                                    pass
+                            elif action_ch == 'd':
+                                # we only print relative path
+                                print "   -> %s" % os.path.join(rel_basename, rel_filename_without_ext + filename_end + self.__extensions[file_ext])
+
+

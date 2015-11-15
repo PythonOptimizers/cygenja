@@ -8,6 +8,9 @@ from codecs import open
 from os import path
 
 packages_list = ['cygenja',
+                 'cygenja.filters',
+                 'cygenja.helpers',
+                 'cygenja.treemap',
                  'tests']
 
 CLASSIFIERS = """\
