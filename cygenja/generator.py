@@ -33,6 +33,50 @@ class GeneratorAction(object):
         return fnmatch.fnmatch(filename, self.__file_pattern)
 
 
+class GeneratorActionContainer(object):
+    def __init__(self):
+        """
+        Container to store an "action".
+
+        Every generation is considered as an action.
+
+        Args:
+            file_pattern: fnmatch pattern.
+            action_function: Callback. See documentation.
+        """
+        super(GeneratorActionContainer, self).__init__()
+        self.__generator_actions = list()
+
+    def add_generator_action(self, action):
+        if not isinstance(action, GeneratorAction):
+            raise RuntimeError('Can not add an object that is not a GeneratorAction')
+
+        self.__generator_actions.append(action)
+
+    def run(self, filename):
+        # find first compatible generator action
+        for action in self.__generator_actions:
+            if action.act_on_file(filename):
+                return action.__action_function()
+
+        return None
+
+    def action_function_name(self, filename):
+        # find first compatible generator action
+        for action in self.__generator_actions:
+            if action.act_on_file(filename):
+                return action.__action_function.__name__
+
+        return "None"
+
+    def act_on_file(self, filename):
+        # find first compatible generator action
+        for action in self.__generator_actions:
+            if action.act_on_file(filename):
+                return True
+        return False
+
+
 class Generator(object):
     """
     Main class for :program:`cygenja`.
@@ -239,9 +283,9 @@ class Generator(object):
             action:
 
         """
-        self.__actions.add_unique_element(relative_directory, action)
-
-
+        if self.__actions.retrieve_element_or_default(relative_directory, None) is not None:
+            self.log_warning("Action for directory '%s' has already been defined." % relative_directory)
+        self.__actions.add_element(location=relative_directory, element=action)
 
     def __retrieve_action(self, relative_directory):
         """
@@ -331,6 +375,7 @@ class Generator(object):
 
 
         """
+        # TODO: maybe avoid reading same template file again and again... i.e. parse it once and generate all needed files without reparsing the template.
         # test if file is non existing or needs to be regenerated
         if force or (not os.path.isfile(generated_filename) or os.stat(template_filename).st_mtime - os.stat(generated_filename).st_mtime > 1):
             self.log_info('   Parsing file %s' % template_filename)
@@ -352,28 +397,34 @@ class Generator(object):
             action (char): Denote action to be taken. Can be:
                 - g: Generate all files that match both directory and file patterns. This is the default behavior.
                 - d: Same as `g` but with doing anything, i.e. dry run.
-                - e: Same as `g` but erasing the generated files instead.
-            recursively: Do we do the actions in the sub-directories? Note that in this case **only** the file pattern applies.
+                - c: Same as `g` but erasing the generated files instead, i.e. clean.
+            recursively: Do we do the actions in the sub-directories? Note that in this case **only** the file pattern applies as **all**
+                the subdirectories are visited.
 
         """
         # directories to visit
         # using heavy machinery to extract absolute cleaned paths... to avoid any problem...
         directories = [os.path.abspath(directory) for directory in glob.glob(os.path.join(self.__root_directory, dir_pattern)) if os.path.isdir(directory)]
 
+        print "=========="
+        print dir_pattern
+        print file_pattern
+        print directories
+
         # list of extensions
         extensions = self.__extensions.keys()
 
-        print extensions
+        #print extensions
 
         for directory in directories:
             for b, f in find_files(directory, file_pattern, recursively=recursively):
-                print b + ': ' + f
-                print '=' * 30
+                #print b + ': ' + f
+                #print '=' * 30
                 # test if some template files can be processed
                 file_basename, file_ext = os.path.splitext(f)
-                print "ext: " + file_ext
+                #print "ext: " + file_ext
                 if file_ext in extensions:
-                    print "we can potentially process this file"
+                    #print "we can potentially process this file"
                     # try to find corresponding action
                     rel_path = os.path.relpath(os.path.join(b,f), self.__root_directory)
                     rel_basename, rel_filename = os.path.split(rel_path)
@@ -397,11 +448,11 @@ class Generator(object):
                             # generated absolute file name
                             out_file_name = os.path.join(b, rel_filename_without_ext + filename_end + self.__extensions[file_ext])
                             if action_ch == 'g':
-                                print " IN: %s" % in_file_name
-                                print "OUT: %s" % out_file_name
+                                #print " IN: %s" % in_file_name
+                                #print "OUT: %s" % out_file_name
                                 self.__generate_file(template_filename=in_file_name, context=context, generated_filename=out_file_name, force=force)
-                            elif action_ch == 'e':
-                                print "delete: %s" % out_file_name
+                            elif action_ch == 'c':
+                                #print "delete: %s" % out_file_name
                                 try:
                                     os.remove(out_file_name)
                                 except OSError:
