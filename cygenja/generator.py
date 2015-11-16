@@ -13,11 +13,11 @@ class GeneratorAction(object):
         """
         Container to store an "action".
 
-        Every generation is considered as an action.
+        Every file(s) generation is considered as an action.
 
         Args:
             file_pattern: fnmatch pattern.
-            action_function: Callback. See documentation.
+            action_function: Callback without argument. See documentation.
         """
         super(GeneratorAction, self).__init__()
         self.__file_pattern = file_pattern
@@ -36,50 +36,47 @@ class GeneratorAction(object):
 class GeneratorActionContainer(object):
     def __init__(self):
         """
-        Container to store an "action".
+        Container to store :class:`GeneratorAction` objects.
 
-        Every generation is considered as an action.
+        A :class:`GeneratorActionContainer` is attached with one directory.
 
-        Args:
-            file_pattern: fnmatch pattern.
-            action_function: Callback. See documentation.
         """
         super(GeneratorActionContainer, self).__init__()
         self.__generator_actions = list()
 
     def add_generator_action(self, action):
+        """
+        Attach/add one :class:`GeneratorAction`.
+
+        Warning:
+            The order in which you add :class:`GeneratorAction` objects **is** important in case of conflicting :class:`GeneratorAction` objects:
+            **only** the **first compatible** :class:`GeneratorAction` object will be used to generate the (source code) files.
+        """
         if not isinstance(action, GeneratorAction):
-            raise RuntimeError('Can not add an object that is not a GeneratorAction')
+            raise RuntimeError('Can not add a none GeneratorAction object.')
 
         self.__generator_actions.append(action)
 
-    def run(self, filename):
+    def get_compatible_generator_action(self, filename):
+        """
+        Return the **first** compatible :class:`GeneratorAction` for a given filename or ``None`` if none is found.
+
+        Args:
+            filename (str): The filename of the template to process.
+        """
         # find first compatible generator action
         for action in self.__generator_actions:
             if action.act_on_file(filename):
-                return action.__action_function()
+                return action
 
         return None
-
-    def action_function_name(self, filename):
-        # find first compatible generator action
-        for action in self.__generator_actions:
-            if action.act_on_file(filename):
-                return action.__action_function.__name__
-
-        return "None"
-
-    def act_on_file(self, filename):
-        # find first compatible generator action
-        for action in self.__generator_actions:
-            if action.act_on_file(filename):
-                return True
-        return False
 
 
 class Generator(object):
     """
-    Main class for :program:`cygenja`.
+    (Code source) file generator.
+
+    This is the main class for :program:`cygenja`. See documentation.
 
 
     """
@@ -216,7 +213,7 @@ class Generator(object):
         """
         return [filter_name for filter_name in self.__jinja2_environment.filters.keys() if filter_name not in self.__jinja2_predefined_filters ]
 
-    # TODO: out of here!
+    # TODO: transform names and put in POCS
     def register_common_type_filters(self):
         """
         Add/register common type filters for the :program:`CySparse` project.
@@ -283,13 +280,18 @@ class Generator(object):
             action:
 
         """
-        if self.__actions.retrieve_element_or_default(relative_directory, None) is not None:
-            self.log_warning("Action for directory '%s' has already been defined." % relative_directory)
-        self.__actions.add_element(location=relative_directory, element=action)
+        generator_action_container = self.__actions.retrieve_element_or_default(relative_directory, None)
 
-    def __retrieve_action(self, relative_directory):
+        if generator_action_container is None:
+            generator_action_container = GeneratorActionContainer()
+            generator_action_container.add_generator_action(action)
+            self.__actions.add_element(location=relative_directory, element=generator_action_container)
+        else:
+            generator_action_container.add_generator_action(action)
+
+    def __retrieve_generator_action_container(self, relative_directory):
         """
-        Return an action corresponding to a relative directory or ``None`` is none is attached to this directory.
+        Return an :class:`GeneratorActionContainer` corresponding to a relative directory or ``None`` is none is attached to this directory.
 
         Args:
             relative_directory:
@@ -305,7 +307,7 @@ class Generator(object):
             action_function: Function to test.
 
         Note:
-            We don't care if variable is a function but rather if it is callable or not.
+            We don't care if the variable refer to a function but rather if it is callable or not.
 
         """
         # test if function returns a couple of values
@@ -332,10 +334,20 @@ class Generator(object):
         Add/register an "action".
 
         Args:
-            relative_directory:
-            file_pattern:
-            action_function:
+            relative_directory (str): Relative directory from root directory. Separator is OS dependent. For instance,
+                under linux, you can register the following:
 
+                >>> register_action('cysparse/sparse/utils', 'find*.cpy', action_function)
+
+                This means that all files corresponding to the `'find*.cpy'` pattern inside the `cysparse/sparse/utils`
+                directory can (see Warning) be dealt with the `action_function`.
+
+            file_pattern: A :program:`fnmatch` pattern for the files concerned by this action.
+            action_function: A callback without argument. See documentation.
+
+        Warning:
+            The order in which you add actions is important. A file will be dealt with the **first** compatible
+            action found.
         """
         # test if directory exists
         if not os.path.isdir(os.path.join(self.__root_directory, relative_directory)):
@@ -348,7 +360,19 @@ class Generator(object):
         self.__add_action(relative_directory, GeneratorAction(file_pattern, action_function))
 
     def register_default_action(self, file_pattern,  action_function):
+        """
+        Default action used if no compatible action is found.
 
+        Args:
+            file_pattern:
+            action_function:
+
+        Warning:
+            Be careful when defining a default action. This action is be applied to **all** template files for
+            which no compatible action is found. You might one to prefer declare explicit actions than rely on this
+            implicit default action. Use at your own risks. That said, if you have lots of default case, this
+            default action can be very convenient and avoid lots of unnecessary action declaration.
+        """
         if self.__default_action is not None:
             self.log_error('Default action function already exist.')
 
@@ -406,25 +430,15 @@ class Generator(object):
         # using heavy machinery to extract absolute cleaned paths... to avoid any problem...
         directories = [os.path.abspath(directory) for directory in glob.glob(os.path.join(self.__root_directory, dir_pattern)) if os.path.isdir(directory)]
 
-        print "=========="
-        print dir_pattern
-        print file_pattern
-        print directories
-
         # list of extensions
         extensions = self.__extensions.keys()
 
-        #print extensions
-
         for directory in directories:
             for b, f in find_files(directory, file_pattern, recursively=recursively):
-                #print b + ': ' + f
-                #print '=' * 30
                 # test if some template files can be processed
                 file_basename, file_ext = os.path.splitext(f)
-                #print "ext: " + file_ext
+
                 if file_ext in extensions:
-                    #print "we can potentially process this file"
                     # try to find corresponding action
                     rel_path = os.path.relpath(os.path.join(b,f), self.__root_directory)
                     rel_basename, rel_filename = os.path.split(rel_path)
@@ -433,26 +447,26 @@ class Generator(object):
                     # template absolute filename
                     in_file_name = os.path.join(b, f)
 
-                    action = self.__actions.retrieve_element_or_default(rel_basename, None)
+                    generator_action_container = self.__actions.retrieve_element_or_default(rel_basename, None)
+                    action = None
 
-                    # is there a default action?
+                    if generator_action_container is not None:
+                        action = generator_action_container.get_compatible_generator_action(f)
+
+                    # is there a default action if needed?
                     if action is None:
                         action = self.__default_action
 
-                    if action and action.act_on_file(f):
-                        # test if action is compatible with file
-                        
+                    if action:
+
                         if action_ch == 'd':
                             print "Process file '%s' with function '%s':" % (rel_path, action.action_function_name())
                         for filename_end, context in action.run():
                             # generated absolute file name
                             out_file_name = os.path.join(b, rel_filename_without_ext + filename_end + self.__extensions[file_ext])
                             if action_ch == 'g':
-                                #print " IN: %s" % in_file_name
-                                #print "OUT: %s" % out_file_name
                                 self.__generate_file(template_filename=in_file_name, context=context, generated_filename=out_file_name, force=force)
                             elif action_ch == 'c':
-                                #print "delete: %s" % out_file_name
                                 try:
                                     os.remove(out_file_name)
                                 except OSError:

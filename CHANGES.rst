@@ -1,11 +1,14 @@
 Changelog for cygenja
 ======================
 
-0.1.3 (unreleased)
+0.2.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Added GeneratorActionContainer to store GeneratorAction;
+- Use of TreeMap structure to hold GeneratorActionContainer;
+- test on CySparse to generate the library with cygenja;
+- changed find_files to return both directory and filename;
+- completely rewrote the generation algorithm;
 
 0.1.2 (2015-11-14)
 ------------------
