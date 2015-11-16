@@ -469,6 +469,7 @@ class Generator(object):
                             elif action_ch == 'c':
                                 try:
                                     os.remove(out_file_name)
+                                    self.log_info("Removed file '%s'" % out_file_name)
                                 except OSError:
                                     pass
                             elif action_ch == 'd':
