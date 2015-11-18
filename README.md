@@ -1,4 +1,4 @@
-![](https://github.com/PythonOptimizers/cygenja/tree/master/logo/cygenja-logo64.png)
+![](doc/logo/cygenja-logo64.png)
 
 # cygenja
 Cython code generator with Jinja2
