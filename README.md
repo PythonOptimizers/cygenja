@@ -1,5 +1,11 @@
+![](https://github.com/PythonOptimizers/cygenja/tree/master/logo/cygenja-logo64.png)
+
 # cygenja
 Cython code generator with Jinja2
+
+
+Icon made by [Freepik](http://www.freepik.com/) from [flaticon](http://www.flaticon.com/).
+
 
 ## What it is
 

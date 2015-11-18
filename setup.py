@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 
-version = '0.2.1.dev0'
+from cygenja.helpers.version import find_version
 
 from distutils.core import setup
 
 from codecs import open
 from os import path
+
+version = find_version(path.realpath(__file__), 'cygenja', '__init__.py')
 
 packages_list = ['cygenja',
                  'cygenja.filters',
