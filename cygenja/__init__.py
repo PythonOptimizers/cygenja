@@ -1,3 +1,2 @@
-import pkg_resources
-
-__version__ = pkg_resources.get_distribution("cygenja").version
+# The version as used in the setup.py and the docs conf.py
+__version__ = "0.1.3"

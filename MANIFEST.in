@@ -1,5 +1,5 @@
 include *.in
 include *.md
 include *.rst
-
+include MANIFEST
 recursive-include doc *
