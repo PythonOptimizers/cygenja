@@ -162,6 +162,16 @@ class Generator(object):
         raise RuntimeError(msg)
 
     ###########################################################################
+    # INFO
+    ###########################################################################
+    def root_directory(self):
+        """
+        Return root directory as absolute path.
+
+        """
+        return self.__root_directory
+
+    ###########################################################################
     # FILTERS
     ###########################################################################
     def register_filter(self, filter_name, filter_ref, force=False):
@@ -349,6 +359,7 @@ class Generator(object):
             The order in which you add actions is important. A file will be dealt with the **first** compatible
             action found.
         """
+        print "register action in : " + os.path.join(self.__root_directory, relative_directory)
         # test if directory exists
         if not os.path.isdir(os.path.join(self.__root_directory, relative_directory)):
             self.log_error('Relative directory \'%s\' does not exist.' % relative_directory)

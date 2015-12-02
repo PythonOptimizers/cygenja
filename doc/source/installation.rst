@@ -1,7 +1,7 @@
 ..  _cygenja_installation:
 
 =========================================================
-:program:`CyGenJa`\'s installation
+:program:`cygenja`\'s installation
 =========================================================
 
 

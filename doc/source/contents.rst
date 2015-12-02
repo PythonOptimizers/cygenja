@@ -1,18 +1,18 @@
 
 =======================
-CySparse documentation
+cygenja documentation
 =======================
 
 :Release: |version|
 :Date: |today|
 
-.. module:: sparse_lib
 
 .. toctree::
    :maxdepth: 2
 
    introduction
    installation
+   use
    
    
 
