@@ -162,6 +162,16 @@ class Generator(object):
         raise RuntimeError(msg)
 
     ###########################################################################
+    # INFO
+    ###########################################################################
+    def root_directory(self):
+        """
+        Return root directory as absolute path.
+
+        """
+        return self.__root_directory
+
+    ###########################################################################
     # FILTERS
     ###########################################################################
     def register_filter(self, filter_name, filter_ref, force=False):
@@ -364,14 +374,14 @@ class Generator(object):
         Default action used if no compatible action is found.
 
         Args:
-            file_pattern:
+            file_pattern: A :program:`fnmatch` pattern for the files concerned by this action.
             action_function:
 
         Warning:
             Be careful when defining a default action. This action is be applied to **all** template files for
-            which no compatible action is found. You might one to prefer declare explicit actions than rely on this
-            implicit default action. Use at your own risks. That said, if you have lots of default case, this
-            default action can be very convenient and avoid lots of unnecessary action declaration.
+            which no compatible action is found. You might want to prefer declare explicit actions than to rely on this
+            implicit default action. Use at your own risks. That said, if you have lots of default cases, this
+            default action can be very convenient and avoid lots of unnecessary action declarations.
         """
         if self.__default_action is not None:
             self.log_error('Default action function already exist.')
@@ -380,6 +390,14 @@ class Generator(object):
             self.log_error('Attached default function is not an action function.')
 
         self.__default_action = GeneratorAction(file_pattern=file_pattern, action_function=action_function)
+
+    def registered_actions_treemap(self):
+        """
+        Return a list of registered actions.
+
+
+        """
+        return self.__actions
 
     ###########################################################################
     # FILE GENERATION
@@ -424,6 +442,7 @@ class Generator(object):
                 - c: Same as `g` but erasing the generated files instead, i.e. clean.
             recursively: Do we do the actions in the sub-directories? Note that in this case **only** the file pattern applies as **all**
                 the subdirectories are visited.
+            force (boolean): Do we force the generation or not?
 
         """
         # directories to visit

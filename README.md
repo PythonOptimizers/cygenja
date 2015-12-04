@@ -1,4 +1,4 @@
-![](https://github.com/PythonOptimizers/cygenja/tree/master/logo/cygenja-logo64.png)
+![](doc/source/logo/cygenja-logo64.png)
 
 # cygenja
 Cython code generator with Jinja2
@@ -18,6 +18,10 @@ experimental `Cython` [fused types](http://docs.cython.org/src/userguide/fusedty
 
 `cygena` is not an automatic `Cython` code generator like the ones listed on [AutoPxd](https://github.com/cython/cython/wiki/AutoPxd). `cygena` does **not** 
 parse `C`/`C++` header files to automatically produce Cython bindings.
+
+## Documentation
+
+To know more about the `cygenja` library you can install it and then generate the documentation with `Sphinx`.
 
 
 

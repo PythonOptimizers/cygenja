@@ -197,12 +197,12 @@ htmlhelp_basename = 'cygenja'
 # (source start file, target name, title, author, document class [howto/manual]).
 latex_documents = [
   ('contents', 'cygenja.tex', ur'cygenja Documentation',
-   ur'Nikolaj van Omme', 'manual'),
+   ur'Nikolaj van Omme\\Sylvain Arreckx\\Dominique Orban', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
-latex_logo = 'logo/cygenja-logo64.pdf'
+latex_logo = 'logo/cygenja-logo128.pdf'
 
 # For "manual" documents, if this is true, then toplevel headings are parts,
 # not chapters.
