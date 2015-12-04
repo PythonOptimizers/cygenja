@@ -46,8 +46,7 @@ Templates and generated files **must** have different extensions
 -----------------------------------------------------------------
 
 Templates are recognized if they have specific extensions. The corresponding generated files will be given specific corresponding extensions too. In fact, this extension correspondance is defined by the user but both extensions 
-**must** be different. For instance, `*.cpd` templated files are transformed into `*.pxd` files. Both extensions, `.cpd` and `.pxd` **must** be different. Non generated files can coexist with generated files, i.e. existing files 
-regardless of their extensions can coexist with generated files and will not be plagued by :program:`cyjenja`. Files with a template extension **will** be parsed as templates and :program:`cygenja` will generate some files.
+**must** be different. For instance, `*.cpd` templated files are transformed into `*.pxd` files. Both extensions, `.cpd` and `.pxd` **must** be different. 
 
 File patterns: only :program:`fnmatch` patterns
 -------------------------------------------------
@@ -64,7 +63,7 @@ To select the subdirectory(ies) within which the rules will be applied by :progr
 Contradictory *actions* are not filtered or monitored
 -----------------------------------------------------
 
-Nothing prevents you to register conflicting actions. In this case, only the last registered action is certain to be triggered.
+Nothing prevents you to register conflicting actions. In this case, only the **first** registered action is certain to be triggered.
 
 ..  only:: html
 

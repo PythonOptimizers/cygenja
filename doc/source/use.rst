@@ -4,6 +4,8 @@
 Use
 =========================================================
 
+We describe briefly the use of :program:`cygenja`. Basically, you register some filters, file extensions and actions before trigger the translation by invoking the ``generate()`` method.
+In the :ref:`cygenja_examples` section, you can see :program:`cygenja` in action as we detail its use to generate the `CySparse <https://github.com/PythonOptimizers/cysparse>`_ library.
 
 The `Generator` class
 ------------------------
@@ -132,6 +134,8 @@ If you only want the filters you registered, invoke:
 
     engine.registered_filters_list()
 
+..  _file_extensions:
+
 File extensions
 ----------------
 
@@ -159,12 +163,168 @@ As with filters, you can retrieve the registered extensions:
 ..  code-block:: python
 
     engine.registered_extensions_list()
+    
+Extensions registered as template file extensions are systematically parsed. What about generated file extensions? They can peacefully coexist with generated files, i.e. existing files 
+regardless of their extensions can coexist with generated files and will not be plagued by :program:`cyjenja`. This means that you can safely delete files: only generated files will be deleted [#footnote_existing_files]_.
+
+
+..  note::
+    
+    Only generated files are deleted. You can thus safely delete files with :program:`cygenja`.
 
 Actions
 ----------
 
+Actions (defined in the ``GeneratorAction`` class) are really the core concept of :program:`cygenja`: an action correspond to a *translation rule*. This translation rule makes a correspondance between a subdirectory
+and a file pattern and a user callback. Here is the signature of the ``register_action`` method:
+
+..  code-block:: python
+
+    def register_action(self, relative_directory, file_pattern, action_function)
+    
+The ``relative_directory`` argument holds the name of a relative directory from the *root* directory. Separator is OS dependent. For instance,
+under linux, you can register the following:
+
+..  code-block:: python
+
+    engine = Generator(...)
+    
+    def action_function(...):
+        ...
+        return ...
+        
+    engine.register_action('cysparse/sparse/utils', 'find*.cpy', action_function)
+
+
+This means that all files corresponding to the `'find*.cpy'` `fnmatch <https://docs.python.org/2/library/fnmatch.html>`_ pattern inside the `cysparse/sparse/utils` 
+directory can be dealt with the ``action_function``.
+
+..  only:: html
+
+    Contrary to filters and file extensions, you **cannot** ask for a list of registered actions. But you can ask :program:`cygenja` to perform a `dry` session: :program:`cygenja` outputs what it would normaly do but without
+    taking any action [#footnote_treemap_to_string_html]_. 
+
+..  only:: latex
+
+    Contrary to filters and file extensions, you **cannot** ask for a list of registered actions. But you can ask :program:`cygenja` to perform a `dry` session: :program:`cygenja` outputs what it would normaly do but without
+    taking any action [#footnote_treemap_to_string_latex]_. 
+
+
+User callback
+"""""""""""""
+
+The ``action_function()`` is a user-defined callback without argument returning a file suffix with a corresponding :program:`Jinja2` 
+`variables dict <http://jinja.pocoo.org/docs/dev/templates/#variables>`_ . Let's illustrate this by an example:
+
+..  code-block:: python
+
+    GENERAL_CONTEXT = {...}
+    INDEX_TYPES = ['INT32', 'INT64']
+    ELEMENT_TYPES = ['FLOAT32', 'FLOAT64']
+    
+    def generate_following_index_and_type():
+        """
+
+        """
+        for index in INDEX_TYPES:
+            GENERAL_CONTEXT['index'] = index
+            for type in ELEMENT_TYPES:
+                GENERAL_CONTEXT['type'] = type
+                yield '_%s_%s' % (index, type), GENERAL_CONTEXT
+
+The user-defined callback ``generate_following_index_and_type()`` doesn't take any input argument and returns the ``'_%s_%s'`` suffix string together with the variables ``dict`` passed to :program:`Jinja2`.
+This function allows :program:`cygenja` to create files with this suffix from any template file. 
+
+For instance, let's use the ``ext_correspondance`` extensions ``dict`` from above (see :ref:`file_extensions`):
+
+..  code-block:: python
+
+    ext_correspondance = { '.cpd' : '.pxd',
+                           '.cpx' : 'pyx'}
+                               
+Any template file with a ``.cpd`` or ``.cpx`` extension will be translated into a ``_index_type.pxd`` or ``_index_type.pyx`` file respectively. The template file ``my_template_code_file.cpd`` will be translated to:
+
+- ``my_template_code_file_INT32_FLOAT32.cpd``
+- ``my_template_code_file_INT32_FLOAT64.cpd``
+- ``my_template_code_file_INT64_FLOAT32.cpd``
+- ``my_template_code_file_INT64_FLOAT64.cpd``
+
+As this function is defined by the user, you have total control on what you want to generate or not. In our example, we redefine ``GENERAL_CONTEXT['index']`` and ``GENERAL_CONTEXT['type']`` for each index and element types.
+
+We use generators (``yield``) but you could return a ``list`` if you prefer.
+
+Incompatible actions
+"""""""""""""""""""""
+
+You could register incompatible actions, i.e. register competing actions that would translate a file in different ways. Our approach is to **only** use the first compatible action and to disregard all the other actions, regardless
+if they could be applied or not. So the order in which you register your actions is important. A file will be dealt with the **first** compatible action found. This is worth a warning:
+
+..  warning::
+
+    A template is translated with the **first** compatible action found and only that action.
+    
+Default action
+""""""""""""""
+
+:program:`cygenja` allows to define **one** default action that will be triggered when no other compatible action is found for a given 
+template file that corresponds to a `glob <https://docs.python.org/2/library/glob.html>`_ pattern:
+
+..  code-block:: python
+
+    engine = Generator(...)
+    
+    def default_action():
+        return ...
+    
+    engine.register_default_action('*.*',  default_action)
+
+Be careful when defining a default action. This action is be applied to **all** template files (corresponding to the :program:`glob` pattern)for
+which no compatible action is found. You might want to prefer declare explicit actions than to rely on this
+implicit default action. Use at your own risks. That said, if you have lots of default cases, this
+default action can be very convenient and avoid lots of unnecessary action declarations.
+        
+
 File generation
 -----------------
 
+To generate the files from template files, there is only **one** method to invoke: `generate()`. Its signature is:
 
+
+..  code-block:: python
+
+    def generate(self, dir_pattern, file_pattern, action_ch='g', recursively=False, force=False)
+    
+
+``dir_pattern`` is a ``glob`` pattern taken from the root directory and it is **only** used for directories while ``file_pattern`` is a ``fnmatch`` pattern taken from all matching directories and is **only** used for files.
+The ``action_ch`` is a character that trigger different behaviours:
+
+- ``g``: Generate all files that match both directory and file patterns. This is the default behavior.
+- ``d``: Same as `g` but with doing anything, i.e. dry run.
+- ``c``: Same as `g` but erasing the generated files instead, i.e. clean.
+    
+These actions can be done in a given directory or in all its corresponding subdirectories. To choose between these two options, use the ``recursively`` switch. Finally, by default, files are only generated if they are 
+outdated, i.e. if they are older than the template they were originated from. You can force the generation with the ``force`` switch.
+        
+..  only:: html
+
+    ..  rubric:: Footnote
+    
+..  [#footnote_existing_files] The user is responsible to not to define a translation rule that overwrites any existing files.
+
+..  only:: html
+
+    ..  [#footnote_treemap_to_string_html] You also have access to the internal :class:`TreeMap` object:
+
+        ..  code-block:: python
+
+            engine = Generator(...)
+            
+            treemap = engine.registered_actions_treemap()
+
+        and thus you have access to all its methods. One interesting method is ``to_string()``. It gives you a representation of all involved subdirectories. 
+
+..  only:: latex
+
+    ..  [#footnote_treemap_to_string_latex] You also have access to the internal :class:`TreeMap` object with the ``registered_actions_treemap()`` method and thus you have access to all its methods. 
+        One interesting method is ``to_string()``. It gives you a representation of all involved subdirectories. 
 
