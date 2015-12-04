@@ -47,16 +47,12 @@ setup(name=  'cygenja',
 
       maintainer_email = "nikolaj@funartech.com",
 
-      summary = "Cython code generator with Jinja2",
       url = "https://github.com/PythonOptimizers/cygenja",
       download_url = "https://github.com/PythonOptimizers/cygenja",
       license='LGPL',
       classifiers=filter(None, CLASSIFIERS.split('\n')),
-      install_requires=['numpy', 'Cython'],
-      #ext_package='cysparse', <- doesn't work with pxd files...
-      #cmdclass = {'build_ext': build_ext},
-      #ext_modules = ext_modules,
+      requires=['jinja2'],
       package_dir = {"cygenja": "cygenja"},
       packages=packages_list,
-      zip_safe=False
+
 )

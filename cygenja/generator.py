@@ -374,7 +374,7 @@ class Generator(object):
         Default action used if no compatible action is found.
 
         Args:
-            file_pattern:
+            file_pattern: A :program:`fnmatch` pattern for the files concerned by this action.
             action_function:
 
         Warning:

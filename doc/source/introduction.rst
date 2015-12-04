@@ -4,7 +4,7 @@
 Introduction
 =========================================================
 
-:program:`cygenja` is a little utility to generate typed source files from
+:program:`cygenja` is a small `Python2 <https://docs.python.org/2/>`_ library to generate typed source files from
 `Jinja2 <http://jinja.pocoo.org/docs/dev/>`_ source templates. We use it extensively to generate our `Cython <http://cython.org/>`_
 projects. We provide this tool as is. See :ref:`limitations` to see if this tool 
 is for you.

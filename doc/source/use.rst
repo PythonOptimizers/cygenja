@@ -7,6 +7,8 @@ Use
 We describe briefly the use of :program:`cygenja`. Basically, you register some filters, file extensions and actions before trigger the translation by invoking the ``generate()`` method.
 In the :ref:`cygenja_examples` section, you can see :program:`cygenja` in action as we detail its use to generate the `CySparse <https://github.com/PythonOptimizers/cysparse>`_ library.
 
+..  _generator_class:
+
 The `Generator` class
 ------------------------
 
@@ -22,7 +24,20 @@ class you needs to interact with. It's constructor is really simple:
     engine = Generator('root_directory', logger, True)
 
 You give a *root* directory, a *logger* and decides if *warnings* must raise `Exception`\s or not. We describe the root directory a little further in :ref:`root_directory` and develop the two other arguments
-in the next corresponding subsections. 
+in the next corresponding subsections.
+
+:program:`cygenja` **only** uses the following :program:`Jinja2` environment:
+
+..  code-block:: python
+
+    self.__jinja2_environment = Environment(
+            autoescape=False,
+            loader=FileSystemLoader('/'), # we use absolute filenames
+            trim_blocks=False,
+            variable_start_string='@',
+            variable_end_string='@')
+
+If you want, you can change this in the source code.
 
 Logging
 """""""""
@@ -61,6 +76,18 @@ constructor:
 
 By default, ``raise_exception_on_warning`` is ``False``.
 
+
+Patterns
+---------
+
+There are only **two** types of patterns:
+
+- `fnmatch <https://docs.python.org/2/library/fnmatch.html>`_ patterns for file names and
+- `glob <https://docs.python.org/2/library/glob.html>`_ patterns for directory names.
+
+This is a general rule for the whole library. When you register an action though, you must provide a directory name, **not** a directory name pattern.
+
+We encourage the reader to (re)read the specifications of these two libraries.
 
 ..  _root_directory:
 
@@ -196,7 +223,7 @@ under linux, you can register the following:
     engine.register_action('cysparse/sparse/utils', 'find*.cpy', action_function)
 
 
-This means that all files corresponding to the `'find*.cpy'` `fnmatch <https://docs.python.org/2/library/fnmatch.html>`_ pattern inside the `cysparse/sparse/utils` 
+This means that all files corresponding to the ``'find*.cpy'`` `fnmatch <https://docs.python.org/2/library/fnmatch.html>`_ pattern inside the ``cysparse/sparse/utils`` 
 directory can be dealt with the ``action_function``.
 
 ..  only:: html
@@ -267,7 +294,7 @@ Default action
 """"""""""""""
 
 :program:`cygenja` allows to define **one** default action that will be triggered when no other compatible action is found for a given 
-template file that corresponds to a `glob <https://docs.python.org/2/library/glob.html>`_ pattern:
+template file that corresponds to a `fnmatch <https://docs.python.org/2/library/fnmatch.html>`_ pattern:
 
 ..  code-block:: python
 
@@ -278,7 +305,7 @@ template file that corresponds to a `glob <https://docs.python.org/2/library/glo
     
     engine.register_default_action('*.*',  default_action)
 
-Be careful when defining a default action. This action is be applied to **all** template files (corresponding to the :program:`glob` pattern)for
+Be careful when defining a default action. This action is be applied to **all** template files (corresponding to the :program:`fnmatch` pattern)for
 which no compatible action is found. You might want to prefer declare explicit actions than to rely on this
 implicit default action. Use at your own risks. That said, if you have lots of default cases, this
 default action can be very convenient and avoid lots of unnecessary action declarations.
@@ -307,7 +334,7 @@ outdated, i.e. if they are older than the template they were originated from. Yo
         
 ..  only:: html
 
-    ..  rubric:: Footnote
+    ..  rubric:: Footnotes
     
 ..  [#footnote_existing_files] The user is responsible to not to define a translation rule that overwrites any existing files.
 
