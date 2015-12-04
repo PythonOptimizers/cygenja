@@ -40,6 +40,12 @@ that it **cannot** generate files located at the root directory level (or outsid
 
 Files can only be generated in the same subdirectories as their corresponding templates.
 
+Templates and generated files **must** have different extensions
+-----------------------------------------------------------------
+
+Templates are recognized if they have specific extensions. The corresponding generated files will be given specific corresponding extensions too. In fact, this extension correspondance is defined by the user but both extensions 
+**must** be different. For instance, `*.cpd` templated files are transformed into `*.pxd` files. Both extensions, `.cpd` and `.pxd` **must** be different.
+
 File patterns: only :program:`fnmatch` patterns
 -------------------------------------------------
 

@@ -8,6 +8,13 @@ Use
 The `Generator` class
 ------------------------
 
+Logging
+"""""""""
+
+Raising exceptions on *Warnings*
+""""""""""""""""""""""""""""""""""
+
+
 The *root* directory
 -----------------------
 
