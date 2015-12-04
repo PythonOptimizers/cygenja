@@ -5,7 +5,7 @@ Introduction
 =========================================================
 
 :program:`cygenja` is a little utility to generate typed source files from
-:program:`Jinja2` source templates. We use it extensively to generate our :program:`Cython`
+`Jinja2 <http://jinja.pocoo.org/docs/dev/>`_ source templates. We use it extensively to generate our `Cython <http://cython.org/>`_
 projects. We provide this tool as is. See :ref:`limitations` to see if this tool 
 is for you.
 
@@ -19,15 +19,15 @@ How it works
 ==================
 
 Within a *root* directory, the user provides some translation rules: each rule is attached to a subdirectory and a file pattern. You can even define several rules for one subdirectory.
-These rules (called `actions` in :program:`cygenja`) are user defined *callbacks*. Once, all rules are registered, the :program:`cygenja` engine 
-is given a directory pattern and a file pattern: only the matching rules are triggered.
+These rules (called `actions` in :program:`cygenja`) are user defined *callbacks*. Once all rules are registered, the :program:`cygenja` engine 
+is given a directory pattern and a file pattern: only the matching rules are triggered. See :ref:`cygenja_use` for more.
 
 ..  _limitations:
 
 Limitations
 ==================
 
-Here is a small list of limitations. It is of course not exhaustiv but it can already give you a hint if this tool is right for you or not.
+Here is a small list of limitations. It is of course not exhaustive but it can already give you a hint if this tool is right for you or not.
 
 :program:`cygenja` only parses subdirectories
 -----------------------------------------------
@@ -43,14 +43,14 @@ Files can only be generated in the same subdirectories as their corresponding te
 File patterns: only :program:`fnmatch` patterns
 -------------------------------------------------
 
-Translation rules can only correspond to :program:`fnmatch` patterns. While this covers most cases, it might be a limitation for some.
+Translation rules can only be applied to files corresponding to `fnmatch <https://docs.python.org/2/library/fnmatch.html>`_ patterns. While this covers most cases, it might be a limitation for some.
 
 We also use the same kind of file patterns to trigger the translation.
 
 Directory patterns: only :program:`glob` patterns
 -------------------------------------------------
 
-To select the subdirectories within which the rules will be applied by :program:`cygenja`'s engine, only  :program:`glob` patterns can be used.
+To select the subdirectory(ies) within which the rules will be applied by :program:`cygenja`'s engine, only  `glob <https://docs.python.org/2/library/glob.html>`_ patterns can be used.
 
 Contradictory *actions* are not filtered or monitored
 -----------------------------------------------------

@@ -13,6 +13,7 @@ cygenja documentation
    introduction
    installation
    use
+   examples
    
    
 
