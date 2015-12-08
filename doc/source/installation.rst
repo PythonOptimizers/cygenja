@@ -9,8 +9,11 @@ Installing :program:`cygenja` is really easy.
 Dependencies
 ==================
 
-The only dependencies is the `Jinja2 <http://jinja.pocoo.org/>`_ library and `Sphinx <http://sphinx-doc.org/>`_ (and possibly `LaTeX <https://www.latex-project.org/>`_ and 
-several sub modules/packages) should you want to generate the documentation. 
+The only dependency is the `Jinja2 <http://jinja.pocoo.org/>`_ library.
+
+
+If you want to generate the documentation, you need `Sphinx <http://sphinx-doc.org/>`_ (and possibly `LaTeX <https://www.latex-project.org/>`_ and 
+several sub modules/packages). To generate the documentation, :program:`cygenja` **must** be installed (the documentation depends on the version number). 
 
 Installation
 =============
@@ -21,4 +24,4 @@ Download source from `Github <https://github.com/PythonOptimizers/cygenja>`_ (or
 
     pip install cygenja
 
-in a virtual environment or globably with full admin rights.
+in a virtual environment or globally with full admin rights.

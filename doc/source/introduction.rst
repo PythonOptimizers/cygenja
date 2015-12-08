@@ -14,8 +14,8 @@ What it can do
 ==================
 
 From a bunch of templated (source) files, it can generate several (source) files. The translation part is given to the powerful `Jinja2 <http://jinja.pocoo.org/docs/dev/>`_ template engine. 
-:program:`cygenja` is a layer above this template engine and is in charge to dispatch translation rules in the right subdirectories and apply them to the right bunch of files. A file is only generated if it is older than 
-the template file used to produced it, i.e. a change in a template file triggers a regeneration of the corresponding files [#force_generation]_.  
+:program:`cygenja` is a layer above this template engine and is in charge to dispatch translation rules in the right subdirectories and apply them to the right bunch of files. A file is **only** generated if it is **older** than 
+the template file used to produce it, i.e. a change in a template file triggers a regeneration of the corresponding files [#force_generation]_.  
  
 How it works
 ==================
