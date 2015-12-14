@@ -68,6 +68,10 @@ By default, ``raise_exception_on_warning`` is ``False``.
 Patterns
 ---------
 
+..  index:: 
+    pair: pattern; files
+    pair: pattern; directories
+    
 There are only **two** types of patterns:
 
 - `fnmatch <https://docs.python.org/2/library/fnmatch.html>`_ patterns for file names and
@@ -81,6 +85,8 @@ We encourage the reader to (re)read the specifications of these two libraries.
 
 The *root* directory
 -----------------------
+
+..  index:: root directory
 
 The root directory is really the main working directory: all file generations can **only** be done inside **subdirectories** of this directory. 
 
@@ -101,6 +107,8 @@ and can be absolute or relative. At any moment, you can retrieve this directory 
 
 Filters
 --------
+
+..  index:: filters
 
 Filters are simply :program:`Jinja2` `filters <http://jinja.pocoo.org/docs/dev/templates/#filters>`_. These filters are *registered*:
 
@@ -189,6 +197,8 @@ regardless of their extensions can coexist with generated files and will not be 
 
 Actions
 ----------
+
+..  index:: action
 
 Actions (defined in the ``GeneratorAction`` class) are really the core concept of :program:`cygenja`: an action correspond to a *translation rule*. This translation rule makes a correspondance between a subdirectory
 and a file pattern and a user callback. Here is the signature of the ``register_action`` method:
@@ -280,6 +290,8 @@ if they could be applied or not. So the order in which you register your actions
     
 Default action
 """"""""""""""
+
+..  index:: action default
 
 :program:`cygenja` allows to define **one** default action that will be triggered when no other compatible action is found for a given 
 template file that corresponds to a `fnmatch <https://docs.python.org/2/library/fnmatch.html>`_ pattern:
