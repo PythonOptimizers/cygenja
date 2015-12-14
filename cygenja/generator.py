@@ -1,4 +1,4 @@
-from jinja2 import Environment, FileSystemLoader
+import jinja2
 import os
 import glob
 import fnmatch
@@ -80,12 +80,13 @@ class Generator(object):
 
 
     """
-    def __init__(self, directory, logger=None, raise_exception_on_warning=False):
+    def __init__(self, directory, jinja2_environment, logger=None, raise_exception_on_warning=False):
         """
         Constructor of a :program:`cygenja` template machine.
 
         Args:
             directory (str): Absolute or relative base directory. Everything happens in that directory and sub-directories.
+            jinja2_environment: :program:`Jinja2` environment.
             logger: A logger (from the standard ``logging``) or ``None`` is no logging is wanted.
             raise_exception_on_warning (bool): If set to ``True``, raise a ``RuntimeError`` when logging a warning.
         """
@@ -100,11 +101,9 @@ class Generator(object):
             self.log_error('Main directory \'%s\' does not exists!' % directory)
 
         self.__root_directory = os.path.abspath(directory)   # main base directory
-        self.__jinja2_environment = Environment(autoescape=False,
-                                                loader=FileSystemLoader('/'), # we use absolute filenames
-                                                trim_blocks=False,
-                                                variable_start_string='@',
-                                                variable_end_string='@')
+        self.__jinja2_environment = jinja2_environment
+
+
 
         self.__jinja2_predefined_filters = self.__jinja2_environment.filters.keys()
 
