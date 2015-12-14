@@ -19,6 +19,19 @@ experimental `Cython` [fused types](http://docs.cython.org/src/userguide/fusedty
 `cygena` is not an automatic `Cython` code generator like the ones listed on [AutoPxd](https://github.com/cython/cython/wiki/AutoPxd). `cygena` does **not** 
 parse `C`/`C++` header files to automatically produce Cython bindings.
 
+## Installation
+
+The only dependency is the [Jinja2](http://jinja.pocoo.org/) library.
+
+To install:
+
+```Python
+python setup.py install
+```
+
+If you want to generate the documentation, you'll need [Sphinx](http://sphinx-doc.org/) (and possibly [LaTeX](https://www.latex-project.org/) and 
+several sub modules/packages). To generate the documentation, `cygenja` **must** be installed (the documentation depends on the version number). 
+
 ## Documentation
 
 To know more about the `cygenja` library you can install it and then generate the documentation with `Sphinx`.

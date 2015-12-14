@@ -21,23 +21,11 @@ class you needs to interact with. It's constructor is really simple:
     ...
     
     logger = ...
-    engine = Generator('root_directory', logger, True)
+    env = ...
+    engine = Generator('root_directory', env, logger, True)
 
-You give a *root* directory, a *logger* and decides if *warnings* must raise `Exception`\s or not. We describe the root directory a little further in :ref:`root_directory` and develop the two other arguments
+You give a *root* directory, a :program:`Jinja2`  environment, a *logger* and decides if *warnings* must raise `Exception`\s or not. We describe the root directory a little further in :ref:`root_directory` and develop the two other arguments
 in the next corresponding subsections.
-
-:program:`cygenja` **only** uses the following :program:`Jinja2` environment:
-
-..  code-block:: python
-
-    self.__jinja2_environment = Environment(
-            autoescape=False,
-            loader=FileSystemLoader('/'), # we use absolute filenames
-            trim_blocks=False,
-            variable_start_string='@',
-            variable_end_string='@')
-
-If you want, you can change this in the source code.
 
 Logging
 """""""""
