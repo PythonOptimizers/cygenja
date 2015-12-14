@@ -21,7 +21,16 @@ parse `C`/`C++` header files to automatically produce Cython bindings.
 
 ## Installation
 
+The only dependency is the [Jinja2](http://jinja.pocoo.org/) library.
 
+To install:
+
+```Python
+python setup.py install
+```
+
+If you want to generate the documentation, you need [Sphinx](http://sphinx-doc.org/) (and possibly [LaTeX](https://www.latex-project.org/) and 
+several sub modules/packages). To generate the documentation, `cygenja` **must** be installed (the documentation depends on the version number). 
 
 ## Documentation
 
