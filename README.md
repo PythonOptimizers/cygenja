@@ -30,7 +30,7 @@ python setup.py install
 ```
 
 If you want to generate the documentation, you'll need [Sphinx](http://sphinx-doc.org/) (and possibly [LaTeX](https://www.latex-project.org/) and 
-several sub modules/packages). To generate the documentation, `cygenja` **must** be installed (the documentation depends on the version number). 
+several sub modules/packages).
 
 ## Documentation
 
