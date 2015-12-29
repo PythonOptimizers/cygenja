@@ -20,7 +20,7 @@ the template file used to produce it, i.e. a change in a template file triggers 
 How it works
 ==================
 
-Within a *root* directory, you provide some translation rules: each rule is attached to a subdirectory and a file pattern. You can even define several rules for one subdirectory.
+Within a *root* directory, you provide some translation rules: each rule is attached to a subdirectory and a file pattern. You can define several rules for one subdirectory.
 These rules (called `actions` in :program:`cygenja`) are user defined *callbacks*. Once all rules are registered, the :program:`cygenja` engine 
 is given a directory pattern and a file pattern: only the matching rules are triggered. See :ref:`cygenja_use` or look at the :ref:`cygenja_examples` for more.
 
@@ -45,7 +45,7 @@ Files can only be generated in the same subdirectories as their corresponding te
 Templates and generated files **must** have different extensions
 -----------------------------------------------------------------
 
-Templates are recognized if they have specific extensions. The corresponding generated files will be given specific corresponding extensions too. In fact, this extension correspondance is defined by the user but both extensions 
+Templates are recognized if they have specific extensions. The corresponding generated files will be given specific corresponding extensions too. This extension correspondance is defined by the user but both extensions 
 **must** be different. For instance, `*.cpd` templated files are transformed into `*.pxd` files. Both extensions, `.cpd` and `.pxd` **must** be different. 
 
 File patterns: only :program:`fnmatch` patterns
@@ -71,4 +71,4 @@ Nothing prevents you to register conflicting actions. In this case, only the **f
     
 ..  [#force_generation] Of course, you can force a file generation.
 
-.. [#footnote_limitations] Although most limitations described here can easily be overcome.
+.. [#footnote_limitations] Most limitations described here can easily be overcome.

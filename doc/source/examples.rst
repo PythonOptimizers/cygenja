@@ -122,7 +122,7 @@ Before we can register any :program:`cygenja` actions, we need to define some ca
 
             yield '_%s' % index, GENERAL_CONTEXT
 
-The first function, ``single_generation``, only generate one file without changing its name. The second function, ``generate_following_only_index``, is more interesting. It generates one file for each index type. These files 
+The first function, ``single_generation``, only generate one file without changing its name (the extension will be changed though). The second function, ``generate_following_only_index``, is more interesting. It generates one file for each index type. These files 
 all have a suffix ``_index`` attached to their names (i.e. ``_INT32_t``, ``_INT64_t``) and the ``GENERAL_CONTEXT`` ``dict`` is each time changed with the corresponding entry ``index`` updated. Here is a more complex version where we generate files with 
 respect to an index type but also an element type:
 
@@ -151,10 +151,10 @@ This registers any template file (``'*.*'``) located in ``cysparse/config`` (lin
                            'generate_indices.*', 
                            generate_following_only_index)
 
-This time, we associate template file with the name ``generate_indices`` inside the subdirectory ``cysparse/cysparse/sparse/sparse_utils/generic``  
-with the ``generate_following_only_index`` callback.
+This time, we associate template files with the name ``generate_indices`` inside the subdirectory ``cysparse/sparse/sparse_utils/generic``  
+with the ``generate_following_only_index`` callback [#remember_the_root_directory]_.
 
-Here, we only associate template files with extension ``.cpi`` to the ``generate_following_index_and_element`` callback inside directory ``cysparse/sparse/csc_mat_matrices/csc_mat_kernel``:
+Here, we only associate template files with extension ``.cpi`` to the ``generate_following_index_and_element`` callback inside subdirectory ``cysparse/sparse/csc_mat_matrices/csc_mat_kernel``:
 
 ..  code-block:: python
 
@@ -162,7 +162,7 @@ Here, we only associate template files with extension ``.cpi`` to the ``generate
                                    '*.cpi', 
                                    generate_following_index_and_element)  
 
-You are allowed to define multiple actions for one directory:
+You are allowed to define multiple actions for one subdirectory:
 
 ..  code-block:: python
 
@@ -213,6 +213,8 @@ At the moment of writing, we have 23 registered actions that trigger 492 file ge
 
     ..  rubric:: Footnotes
 
-..  [#footnote_absolute_dir_not_really] Yes, we are well aware that this not what is expected from the code.
+..  [#footnote_absolute_dir_not_really] Yes, we are well aware that this not what is expected from the code. ``os.path.abspath(__file__)`` will never only return ``cysparse``.
     
-..  [#footnote_our_jinja2_env] See :ref:`generator_class` for our default :program:`Jinja2` environment in :program:`cygenja`.
+..  [#footnote_our_jinja2_env] :program:`CySparse`'s :program:`Jinja2` environment allows us to use variables names like this: ``@my_variable@``.
+
+..  [#remember_the_root_directory] Thus the real directory is ``cysparse/cysparse/sparse/sparse_utils/generic``.
