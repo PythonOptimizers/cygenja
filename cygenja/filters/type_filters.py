@@ -5,7 +5,7 @@ def type2enum(type_name):
 
     For instance:
 
-        INT32 -> INT32_T
+        INT32_t -> INT32_T
 
     Args:
         cysparse_type:

@@ -4,7 +4,7 @@
 Use
 =========================================================
 
-We describe briefly the use of :program:`cygenja`. Basically, you register some filters, file extensions and actions before trigger the translation by invoking the ``generate()`` method.
+We describe briefly the use of :program:`cygenja`. Basically, you register some filters, file extensions and actions before triggering the translation.
 In the :ref:`cygenja_examples` section, you can see :program:`cygenja` in action as we detail its use to generate the `CySparse <https://github.com/PythonOptimizers/cysparse>`_ library.
 
 ..  _generator_class:
@@ -24,13 +24,16 @@ class you needs to interact with. It's constructor is really simple:
     env = ...
     engine = Generator('root_directory', env, logger, True)
 
-You give a *root* directory, a :program:`Jinja2`  environment, a *logger* and decides if *warnings* must raise `Exception`\s or not. We describe the root directory a little further in :ref:`root_directory` and develop the two other arguments
+You give a ``root_directory`` directory, a :program:`Jinja2`  environment, a *logger* 
+(from the standard ``logging`` library) and decides if *warnings* must raise `Exception`\s or not (default: ``False``). The first two arguments are mandatory while the last two are optional. You don't have to provide 
+a logging engine. We describe the root directory a little further in :ref:`root_directory`, refer the reader to `jinja2.Environment <http://jinja.pocoo.org/docs/dev/api/#jinja2.Environment>`_ for more about 
+the ``env`` argument and develop the two last arguments
 in the next corresponding subsections.
 
 Logging
 """""""""
 
-A logging engine *can* be used but is not mandatory. If you don't want to log :program:`cygenja`\'s behavior, simply pass `None` for the logger argument in the constructor. The logging engine is 
+A logging engine *can* be used but is not mandatory. If you don't want to log :program:`cygenja`\'s behavior, simply pass `None` for the logger argument in the constructor (this is the default). The logging engine is 
 an object from Python's `logging library <https://docs.python.org/2/library/logging.html>`_.
 
 ..  code-block:: python
@@ -62,7 +65,7 @@ constructor:
 
     engine = Generator('root_directory', logger=logger, raise_exception_on_warning=True)
 
-By default, ``raise_exception_on_warning`` is ``False``.
+By default, ``raise_exception_on_warning`` is set to ``False``.
 
 
 Patterns
@@ -96,7 +99,7 @@ This is so important, we need a warning:
 
     File generations can **only** be done inside **subdirectories** of the *root* directory.
     
-This directory is given a first parameter of :class:`Generator`\'s constructor
+This directory is given as the first parameter of :class:`Generator`\'s constructor
 and can be absolute or relative. At any moment, you can retrieve this directory as an absolute path:
 
 ..  code-block:: python
@@ -239,7 +242,7 @@ User callback
 """""""""""""
 
 The ``action_function()`` is a user-defined callback without argument returning a file suffix with a corresponding :program:`Jinja2` 
-`variables dict <http://jinja.pocoo.org/docs/dev/templates/#variables>`_ . Let's illustrate this by an example:
+`variables dict <http://jinja.pocoo.org/docs/dev/templates/#variables>`_ (this is a simple :program:`Python` ``dict``). Let's illustrate this by an example:
 
 ..  code-block:: python
 
@@ -257,8 +260,8 @@ The ``action_function()`` is a user-defined callback without argument returning 
                 GENERAL_CONTEXT['type'] = type
                 yield '_%s_%s' % (index, type), GENERAL_CONTEXT
 
-The user-defined callback ``generate_following_index_and_type()`` doesn't take any input argument and returns the ``'_%s_%s'`` suffix string together with the variables ``dict`` passed to :program:`Jinja2`.
-This function allows :program:`cygenja` to create files with this suffix from any template file. 
+The user-defined callback ``generate_following_index_and_type()`` doesn't take any input argument and returns the ``'_%s_%s'`` suffix string together with the variables ``dict`` ``GENERAL_CONTEXT``.
+This function allows :program:`cygenja` to create files with this suffix from any matching template file. The ``GENERAL_CONTEXT`` is given to :program:`Jinja2` for the appropriate translation. 
 
 For instance, let's use the ``ext_correspondance`` extensions ``dict`` from above (see :ref:`file_extensions`):
 
@@ -267,7 +270,7 @@ For instance, let's use the ``ext_correspondance`` extensions ``dict`` from abov
     ext_correspondance = { '.cpd' : '.pxd',
                            '.cpx' : 'pyx'}
                                
-Any template file with a ``.cpd`` or ``.cpx`` extension will be translated into a ``_index_type.pxd`` or ``_index_type.pyx`` file respectively. The template file ``my_template_code_file.cpd`` will be translated to:
+Any template file with a ``.cpd`` or ``.cpx`` extension will be translated into a ``_index_type.pxd`` or ``_index_type.pyx`` file respectively. For instance, the template file ``my_template_code_file.cpd`` will be translated to:
 
 - ``my_template_code_file_INT32_FLOAT32.cpd``
 - ``my_template_code_file_INT32_FLOAT64.cpd``
@@ -305,7 +308,7 @@ template file that corresponds to a `fnmatch <https://docs.python.org/2/library/
     
     engine.register_default_action('*.*',  default_action)
 
-Be careful when defining a default action. This action is be applied to **all** template files (corresponding to the :program:`fnmatch` pattern)for
+Be careful when defining a default action. This action is be applied to **all** template files (corresponding to the :program:`fnmatch` pattern) for
 which no compatible action is found. You might want to prefer declare explicit actions than to rely on this
 implicit default action. Use at your own risks. That said, if you have lots of default cases, this
 default action can be very convenient and avoid lots of unnecessary action declarations.
@@ -319,7 +322,8 @@ To generate the files from template files, there is only **one** method to invok
 
 ..  code-block:: python
 
-    def generate(self, dir_pattern, file_pattern, action_ch='g', recursively=False, force=False)
+    def generate(self, dir_pattern, file_pattern, action_ch='g', 
+                 recursively=False, force=False)
     
 
 ``dir_pattern`` is a ``glob`` pattern taken from the root directory and it is **only** used for directories while ``file_pattern`` is a ``fnmatch`` pattern taken from all matching directories and is **only** used for files.
