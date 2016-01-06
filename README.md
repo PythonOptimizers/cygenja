@@ -37,5 +37,7 @@ several sub modules/packages).
 To know more about the `cygenja` library you can install it and then generate the documentation with `Sphinx`.
 
 
+## License
 
+`cygenja` is licensed under the GLP3.
 
