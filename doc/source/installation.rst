@@ -22,6 +22,6 @@ Download source files from `Github <https://github.com/PythonOptimizers/cygenja>
 
 ..  code-block:: bash
 
-    pip install cygenja
+    python setup.py install
 
 in a virtual environment or globally with full admin rights.
