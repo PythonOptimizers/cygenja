@@ -16,10 +16,10 @@ cygenja documentation
    examples
    
    
+..	only:: html
 
+	Indices and Tables
+	==================
 
-Indices and Tables
-==================
-
-* :ref:`genindex`
-* :ref:`search`
+	* :ref:`genindex`
+	* :ref:`search`

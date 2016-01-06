@@ -13,12 +13,12 @@ The only dependency is the `Jinja2 <http://jinja.pocoo.org/>`_ library.
 
 
 If you want to generate the documentation, you need `Sphinx <http://sphinx-doc.org/>`_ (and possibly `LaTeX <https://www.latex-project.org/>`_ and 
-several sub modules/packages). To generate the documentation, :program:`cygenja` does not need to be installed (but you'll loose :program:`cygenja`'s version number). 
+several sub modules/packages). To generate the documentation, :program:`cygenja` does not need to be installed. 
 
 Installation
 =============
 
-Download source from `Github <https://github.com/PythonOptimizers/cygenja>`_ (or clone the repository) and invoke the traditionnal:
+Download source files from `Github <https://github.com/PythonOptimizers/cygenja>`_ (or clone the repository) and invoke the traditionnal:
 
 ..  code-block:: bash
 

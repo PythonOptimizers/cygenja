@@ -4,7 +4,7 @@
 Use
 =========================================================
 
-We describe briefly the use of :program:`cygenja`. Basically, you register some filters, file extensions and actions before triggering the translation.
+We briefly describe the use of :program:`cygenja`. Basically, you register some filters, file extensions and actions before triggering the translation.
 In the :ref:`cygenja_examples` section, you can see :program:`cygenja` in action as we detail its use to generate the `CySparse <https://github.com/PythonOptimizers/cysparse>`_ library.
 
 ..  _generator_class:
@@ -12,8 +12,8 @@ In the :ref:`cygenja_examples` section, you can see :program:`cygenja` in action
 The `Generator` class
 ------------------------
 
-The :class:`Generator` class is the main class of the :program:`cygenja` library. It is also the only 
-class you needs to interact with. It's constructor is really simple:
+The :class:`Generator` class is the main class of the :program:`cygenja` library. It also is the only 
+class you need to interact with. Its constructor is really simple:
 
 ..  code-block:: python
 
@@ -24,16 +24,16 @@ class you needs to interact with. It's constructor is really simple:
     env = ...
     engine = Generator('root_directory', env, logger, True)
 
-You give a ``root_directory`` directory, a :program:`Jinja2`  environment, a *logger* 
-(from the standard ``logging`` library) and decides if *warnings* must raise `Exception`\s or not (default: ``False``). The first two arguments are mandatory while the last two are optional. You don't have to provide 
+You provide a ``root_directory`` directory, a :program:`Jinja2`  environment, a *logger* 
+(from the standard ``logging`` library) and decide if *warnings* must raise `Exception`\s or not (default: ``False``). The first two arguments are mandatory while the last two are optional. You don't have to provide 
 a logging engine. We describe the root directory a little further in :ref:`root_directory`, refer the reader to `jinja2.Environment <http://jinja.pocoo.org/docs/dev/api/#jinja2.Environment>`_ for more about 
-the ``env`` argument and develop the two last arguments
+the ``env`` argument and discuss the two last arguments
 in the next corresponding subsections.
 
 Logging
 """""""""
 
-A logging engine *can* be used but is not mandatory. If you don't want to log :program:`cygenja`\'s behavior, simply pass `None` for the logger argument in the constructor (this is the default). The logging engine is 
+A logging engine *can* be used but is not mandatory. If you don't want to log :program:`cygenja`\'s behavior, simply pass `None` as the value of the logger argument in the constructor (this is the default). The logging engine is 
 an object from Python's `logging library <https://docs.python.org/2/library/logging.html>`_.
 
 ..  code-block:: python
@@ -93,7 +93,7 @@ The *root* directory
 
 The root directory is really the main working directory: all file generations can **only** be done inside **subdirectories** of this directory. 
 
-This is so important, we need a warning:
+This is so important that it is worth a warning:
 
 ..  warning::
 
@@ -124,7 +124,7 @@ Filters are simply :program:`Jinja2` `filters <http://jinja.pocoo.org/docs/dev/t
     engine = Generator(...)
     engine.register_filter('my_filter_name', my_jinja2_filter)
 
-where ``'my_filter_name'`` if the name of the filter used inside your :program:`Jinja2` template files and ``my_jinja2_filter`` is a reference to the actual filter.
+where ``'my_filter_name'`` is the name of the filter used inside your :program:`Jinja2` template files and ``my_jinja2_filter`` is a reference to the actual filter.
 
 The signature of ``register_filter`` is:
 
@@ -135,7 +135,7 @@ The signature of ``register_filter`` is:
 allowing you to register a new filter under an already existing filter name. If you keep ``force`` set to ``False``, a warning is triggered each time you try to register a 
 new filter under an already existing filter name and this **new** filter is disregarded. 
 
-You also can register several filters at once with a dictonary of filters:
+You also can register several filters at once with a dictionary of filters:
 
 ..  code-block:: python
 
@@ -190,8 +190,9 @@ As with filters, you can retrieve the registered extensions:
 
     engine.registered_extensions_list()
     
-Extensions registered as template file extensions are systematically parsed. What about generated file extensions? They can peacefully coexist with generated files, i.e. existing files 
-regardless of their extensions can coexist with generated files and will not be plagued by :program:`cyjenja`. This means that you can safely delete files: only generated files will be deleted [#footnote_existing_files]_.
+Files with extensions registered as template file extensions are systematically parsed, i.e. you cannot use these extensions for files that are not templates because :program:`cygenja` will try to parse them.
+What about generated file extensions? Files with these extensions can peacefully coexist with generated files, i.e. existing files, 
+regardless of their extensions, can coexist with generated files and will not be plagued by :program:`cyjenja`. This means that you can safely delete files: only generated files will be deleted [#footnote_existing_files]_.
 
 
 ..  note::
@@ -210,7 +211,7 @@ and a file pattern and a user callback. Here is the signature of the ``register_
 
     def register_action(self, relative_directory, file_pattern, action_function)
     
-The ``relative_directory`` argument holds the name of a relative directory from the *root* directory. Separator is OS dependent. For instance,
+The ``relative_directory`` argument holds the name of a relative directory from the *root* directory. The separator is OS dependent. For instance,
 under linux, you can register the following:
 
 ..  code-block:: python
@@ -241,7 +242,7 @@ directory can be dealt with the ``action_function``.
 User callback
 """""""""""""
 
-The ``action_function()`` is a user-defined callback without argument returning a file suffix with a corresponding :program:`Jinja2` 
+The ``action_function()`` is a user-defined callback without argument. It returns a file suffix with a corresponding :program:`Jinja2` 
 `variables dict <http://jinja.pocoo.org/docs/dev/templates/#variables>`_ (this is a simple :program:`Python` ``dict``). Let's illustrate this by an example:
 
 ..  code-block:: python
@@ -263,7 +264,7 @@ The ``action_function()`` is a user-defined callback without argument returning 
 The user-defined callback ``generate_following_index_and_type()`` doesn't take any input argument and returns the ``'_%s_%s'`` suffix string together with the variables ``dict`` ``GENERAL_CONTEXT``.
 This function allows :program:`cygenja` to create files with this suffix from any matching template file. The ``GENERAL_CONTEXT`` is given to :program:`Jinja2` for the appropriate translation. 
 
-For instance, let's use the ``ext_correspondance`` extensions ``dict`` from above (see :ref:`file_extensions`):
+For instance, let's use the ``ext_correspondance`` extensions ``dict`` discussed earlier (see :ref:`file_extensions`):
 
 ..  code-block:: python
 
@@ -308,9 +309,9 @@ template file that corresponds to a `fnmatch <https://docs.python.org/2/library/
     
     engine.register_default_action('*.*',  default_action)
 
-Be careful when defining a default action. This action is be applied to **all** template files (corresponding to the :program:`fnmatch` pattern) for
-which no compatible action is found. You might want to prefer declare explicit actions than to rely on this
-implicit default action. Use at your own risks. That said, if you have lots of default cases, this
+Be careful when defining a default action. This action is applied to **all** template files (corresponding to the :program:`fnmatch` pattern) for
+which no compatible action is found. You might want to prefer declaring explicit actions than relying on this
+implicit default action. That said, if you have lots of default cases, this
 default action can be very convenient and avoid lots of unnecessary action declarations.
         
 
@@ -327,7 +328,7 @@ To generate the files from template files, there is only **one** method to invok
     
 
 ``dir_pattern`` is a ``glob`` pattern taken from the root directory and it is **only** used for directories while ``file_pattern`` is a ``fnmatch`` pattern taken from all matching directories and is **only** used for files.
-The ``action_ch`` is a character that trigger different behaviours:
+The ``action_ch`` is a character that triggers different behaviours:
 
 - ``g``: Generate all files that match both directory and file patterns. This is the default behavior.
 - ``d``: Same as `g` but with doing anything, i.e. dry run.
