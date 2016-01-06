@@ -14,7 +14,7 @@ What it can do
 ==================
 
 From a bunch of templated (source) files, it can generate several (source) files. The translation part is given to the powerful `Jinja2 <http://jinja.pocoo.org/docs/dev/>`_ template engine. 
-:program:`cygenja` is a layer above this template engine and is in charge to dispatch translation rules in the right subdirectories and apply them to the right bunch of files. A file is **only** generated if it is **older** than 
+:program:`cygenja` is a layer above this template engine and is in charge of dispatching translation rules to the right subdirectories and apply them to the right bunch of files. A file is **only** generated if it is **older** than 
 the template file used to produce it, i.e. a change in a template file triggers a regeneration of the corresponding files [#force_generation]_.  
  
 How it works
@@ -29,7 +29,7 @@ is given a directory pattern and a file pattern: only the matching rules are tri
 Limitations
 ==================
 
-Here is a small list of limitations [#footnote_limitations]_. It is of course not exhaustive but it can already give you a hint if this tool is right for you or not.
+Here is a small list of limitations [#footnote_limitations]_. It is of course not exhaustive but it can already give you a hint if this tool is for you or not.
 
 :program:`cygenja` only parses subdirectories
 -----------------------------------------------
@@ -45,8 +45,8 @@ Files can only be generated in the same subdirectories as their corresponding te
 Templates and generated files **must** have different extensions
 -----------------------------------------------------------------
 
-Templates are recognized if they have specific extensions. The corresponding generated files will be given specific corresponding extensions too. This extension correspondance is defined by the user but both extensions 
-**must** be different. For instance, `*.cpd` templated files are transformed into `*.pxd` files. Both extensions, `.cpd` and `.pxd` **must** be different. 
+Templates are identified by specific extensions. The corresponding generated files will be given specific corresponding extensions too. This extension correspondance is defined by the user but both extensions 
+**must** be different. For instance, `*.cpd` templated files are transformed into `*.pxd` files. Both extensions, `.cpd` and `.pxd` **are** be different. 
 
 File patterns: only :program:`fnmatch` patterns
 -------------------------------------------------
@@ -60,10 +60,10 @@ Directory patterns: only :program:`glob` patterns
 
 To select the subdirectory(ies) within which the rules will be applied by :program:`cygenja`'s engine, only  `glob <https://docs.python.org/2/library/glob.html>`_ patterns can be used.
 
-Contradictory *actions* are not filtered or monitored
------------------------------------------------------
+Contradictory *actions* are not filtered nor monitored
+-------------------------------------------------------
 
-Nothing prevents you to register conflicting actions. In this case, only the **first** registered action is certain to be triggered.
+Nothing prevents you from registering conflicting actions. In this case, only the **first** registered action is guaranteed to be triggered.
 
 ..  only:: html
 

@@ -57,7 +57,7 @@ File extensions
 -----------------
 
 :program:`CySparse` is written essentially in `Cython <http://cython.org/>`_. We can thus generate four types of files: ``.pyx``, ``.pxd``, ``.pxi`` and of course ``.py`` files. For each type of file, we have defined
-a corresponding extension for a template file: ``.cpx``, ``.cpd``, ``.cpi`` and ``cpy``. We register this correspondance like this:
+a corresponding extension for a template file: ``.cpx``, ``.cpd``, ``.cpi`` and ``cpy``. We register this correspondance like so:
 
 ..  code-block:: python
 
@@ -122,8 +122,8 @@ Before we can register any :program:`cygenja` actions, we need to define some ca
 
             yield '_%s' % index, GENERAL_CONTEXT
 
-The first function, ``single_generation``, only generate one file without changing its name (the extension will be changed though). The second function, ``generate_following_only_index``, is more interesting. It generates one file for each index type. These files 
-all have a suffix ``_index`` attached to their names (i.e. ``_INT32_t``, ``_INT64_t``) and the ``GENERAL_CONTEXT`` ``dict`` is each time changed with the corresponding entry ``index`` updated. Here is a more complex version where we generate files with 
+The first function, ``single_generation``, only generates one file without changing its name (the extension will be changed though). The second function, ``generate_following_only_index``, is more interesting. It generates one file for each index type. These files 
+all have a suffix ``_index`` attached to their names (i.e. ``_INT32_t``, ``_INT64_t``) and the ``GENERAL_CONTEXT`` ``dict`` is changed every time with the corresponding entry ``index`` updated. Here is a more complex version where we generate files with 
 respect to an index type but also an element type:
 
 ..  code-block:: python
@@ -135,7 +135,7 @@ respect to an index type but also an element type:
                 GENERAL_CONTEXT['type'] = type
                 yield '_%s_%s' % (index, type), GENERAL_CONTEXT
 
-Because these functions are use-defined, you have total control and can generate any complicated combinations that you like.
+Because these functions are user-defined, you have total control and can generate any complicated combinations that you like.
 
 Now we can use these callbacks and register them. For instance:
 
@@ -215,6 +215,6 @@ At the moment of writing, we have 23 registered actions that trigger 492 file ge
 
 ..  [#footnote_absolute_dir_not_really] Yes, we are well aware that this not what is expected from the code. ``os.path.abspath(__file__)`` will never only return ``cysparse``.
     
-..  [#footnote_our_jinja2_env] :program:`CySparse`'s :program:`Jinja2` environment allows us to use variables names like this: ``@my_variable@``.
+..  [#footnote_our_jinja2_env] :program:`CySparse`'s :program:`Jinja2` environment allows us to use variables names like so: ``@my_variable@``.
 
 ..  [#remember_the_root_directory] Thus the real directory is ``cysparse/cysparse/sparse/sparse_utils/generic``.
