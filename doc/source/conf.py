@@ -16,9 +16,6 @@ import sys, os
 #sys.path.append(os.path.abspath('../../../Lib'))
 sys.path.append('sphinxext')
 
-# Import support for ipython console session syntax highlighting (lives
-# in the sphinxext directory defined above)
-import ipython_console_highlighting
 import mathjax
 
 import sphinx_bootstrap_theme
@@ -31,7 +28,6 @@ import sphinx_bootstrap_theme
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest']
 extensions += ['sphinx.ext.todo']
 extensions += ['sphinx.ext.inheritance_diagram']
-extensions += ['ipython_console_highlighting']
 extensions += ['mathjax']
 mathjax_path = 'https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'
 
@@ -54,7 +50,7 @@ master_doc = 'contents'
 
 # General information about the project.
 project = u'cygenja'
-copyright = u'2015, Dominique Orban, Sylvain Arreckx and Nikolaj van Omme'
+copyright = u'2015, Sylvain Arreckx, Dominique Orban and Nikolaj van Omme'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

@@ -12,7 +12,7 @@ cygenja documentation
 
    introduction
    installation
-   use
+   usage
    examples
    
    

@@ -29,7 +29,7 @@ To install:
 python setup.py install
 ```
 
-If you want to generate the documentation, you'll need [Sphinx](http://sphinx-doc.org/) (and possibly [LaTeX](https://www.latex-project.org/) and 
+If you want to generate the documentation, you'll need [Sphinx](http://sphinx-doc.org/) and the [sphinx_bootstrap_theme](https://ryan-roemer.github.io/sphinx-bootstrap-theme/README.html) (and possibly [LaTeX](https://www.latex-project.org/) and 
 several sub modules/packages).
 
 ## Documentation

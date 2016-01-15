@@ -6,23 +6,23 @@ Introduction
 
 :program:`cygenja` is a small `Python2 <https://docs.python.org/2/>`_ library to generate typed source files from
 `Jinja2 <http://jinja.pocoo.org/docs/dev/>`_ source templates. We use it extensively to generate our `Cython <http://cython.org/>`_
-projects. We provide this tool as is. See :ref:`limitations` to see if this tool 
+projects. See :ref:`limitations` to see if this tool 
 is for you.
 
 
-What it can do
-==================
+What :program:`cygenja` can do
+================================
 
-From a bunch of templated (source) files, it can generate several (source) files. The translation part is given to the powerful `Jinja2 <http://jinja.pocoo.org/docs/dev/>`_ template engine. 
+From a bunch of templated (source) files, :program:`cygenja` can generate several (source) files. The translation part is given to the powerful `Jinja2 <http://jinja.pocoo.org/docs/dev/>`_ template engine. 
 :program:`cygenja` is a layer above this template engine and is in charge of dispatching translation rules to the right subdirectories and apply them to the right bunch of files. A file is **only** generated if it is **older** than 
 the template file used to produce it, i.e. a change in a template file triggers a regeneration of the corresponding files [#force_generation]_.  
  
-How it works
-==================
+How :program:`cygenja` works
+=================================
 
 Within a *root* directory, you provide some translation rules: each rule is attached to a subdirectory and a file pattern. You can define several rules for one subdirectory.
 These rules (called `actions` in :program:`cygenja`) are user defined *callbacks*. Once all rules are registered, the :program:`cygenja` engine 
-is given a directory pattern and a file pattern: only the matching rules are triggered. See :ref:`cygenja_use` or look at the :ref:`cygenja_examples` for more.
+is given a directory pattern and a file pattern: only the matching rules are triggered. See :ref:`cygenja_usage` or look at the :ref:`cygenja_examples` for more.
 
 ..  _limitations:
 
@@ -64,6 +64,11 @@ Contradictory *actions* are not filtered nor monitored
 -------------------------------------------------------
 
 Nothing prevents you from registering conflicting actions. In this case, only the **first** registered action is guaranteed to be triggered.
+
+License
+========
+
+:program:`cygenja` is distributed under the `GPLv3 <http://www.gnu.org/licenses/gpl-3.0.en.html>`_.
 
 ..  only:: html
 

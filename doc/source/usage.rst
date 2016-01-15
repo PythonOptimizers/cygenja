@@ -1,7 +1,7 @@
-..  _cygenja_use:
+..  _cygenja_usage:
 
 =========================================================
-Use
+Usage
 =========================================================
 
 We briefly describe the use of :program:`cygenja`. Basically, you register some filters, file extensions and actions before triggering the translation.
