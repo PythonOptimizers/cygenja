@@ -10,3 +10,12 @@ __pycache__/
 /doc/build/*
 /*.egg-info
 /dist
+
+# small_test_case related files
+/small_test_case/build
+/small_test_case/dist
+/small_test_case/generator.log
+/small_test_case/small_test_case.egg-info
+*.c
+*.pyx
+*.pxd
