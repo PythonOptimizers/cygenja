@@ -1,0 +1,30 @@
+import numpy as np
+cimport numpy as cnp
+
+cnp.import_array()
+
+cpdef axpy_@index@_@type@(@index|generic_to_c_type@ n, @index|generic_to_c_type@ m, cnp.ndarray[dtype=cnp.@index|lower@_t, ndim=1] colptr,
+                          cnp.ndarray[dtype=cnp.@index|lower@_t, ndim=1] rowind, cnp.ndarray[dtype=cnp.@type|lower@_t, ndim=1] values,
+                          cnp.ndarray[dtype=cnp.@type|lower@_t, ndim=1] x, cnp.ndarray[dtype=cnp.@type|lower@_t, ndim=1] y):
+    """
+    Routine to compute y = Ax + y
+    This is done inplace. y will hold the result.
+
+    Matrix A should be supplied in Compressed Sparse Column (CSC) format.
+
+    Args:
+        m: number of line of matrix A
+        n: number of column of matrix A
+        colptr: Numpy array pointing to column starts in `rowind` and `values`
+        rowind: Numpy array of row indices
+        values: Numpy array of values of non zeros elements of A
+        x: Numpy array to be multiplied by A
+        y: Numpy array to be added to A*x. Also holds the result of
+           A*x + y at the end.
+    """
+    cdef @index|generic_to_c_type@ p, j, k
+
+    for j in xrange(n):
+        for p in xrange(colptr[j], colptr[j+1]):
+            k = rowind[p]
+            y[k] += values[p] * x[j]
