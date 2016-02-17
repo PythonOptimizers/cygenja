@@ -174,7 +174,7 @@ class TreeMap(object):
         node = None
         try:
             node = self._get_node(loc_descriptor)
-        except RuntimeError, e:
+        except RuntimeError as e:
             pass
 
         return node is not None
@@ -248,7 +248,7 @@ class TreeMap(object):
         node = None
         try:
             node = self._get_node(loc_descriptor)
-        except Exception, e:
+        except Exception as e:
             return default
 
         return node.get_element()

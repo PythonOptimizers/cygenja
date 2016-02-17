@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import jinja2
 import os
 import glob
@@ -478,7 +480,7 @@ class Generator(object):
                     if action:
 
                         if action_ch == 'd':
-                            print "Process file '%s' with function '%s':" % (rel_path, action.action_function_name())
+                            print("Process file '%s' with function '%s':" % (rel_path, action.action_function_name()))
                         for filename_end, context in action.run():
                             # generated absolute file name
                             out_file_name = os.path.join(b, rel_filename_without_ext + filename_end + self.__extensions[file_ext])
@@ -492,6 +494,6 @@ class Generator(object):
                                     pass
                             elif action_ch == 'd':
                                 # we only print relative path
-                                print "   -> %s" % os.path.join(rel_basename, rel_filename_without_ext + filename_end + self.__extensions[file_ext])
+                                print("   -> %s" % os.path.join(rel_basename, rel_filename_without_ext + filename_end + self.__extensions[file_ext]))
 
 
