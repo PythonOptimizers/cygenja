@@ -14,6 +14,8 @@ experimental `Cython` [fused types](http://docs.cython.org/src/userguide/fusedty
 
 `cygenja` is used in most of our `Cython` projects.
 
+It is **only** compatible with Python 2.7 for the moment. We plan to make it available for Python 3.3 projects later.
+
 ## What it is not
 
 `cygenja` is not an automatic `Cython` code generator like the ones listed on [AutoPxd](https://github.com/cython/cython/wiki/AutoPxd). `cygenja` does **not** 
