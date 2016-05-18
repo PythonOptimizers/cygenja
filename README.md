@@ -18,7 +18,7 @@ It is **only** compatible with Python 2.7 for the moment. We plan to make it ava
 
 ## What it is not
 
-`cygenja` is not an automatic `Cython` code generator like the ones listed on [AutoPxd](https://github.com/cython/cython/wiki/AutoPxd). `cygenja` does **not** 
+`cygenja` is not an automatic `Cython` code generator like the ones listed on [AutoPxd](https://github.com/cython/cython/wiki/AutoPxd). `cygenja` does **not**
 parse `C`/`C++` header files to automatically produce Cython bindings.
 
 ## Installation
@@ -31,7 +31,7 @@ To install:
 python setup.py install
 ```
 
-If you want to generate the documentation, you'll need [Sphinx](http://sphinx-doc.org/) and the [sphinx_bootstrap_theme](https://ryan-roemer.github.io/sphinx-bootstrap-theme/README.html) (and possibly [LaTeX](https://www.latex-project.org/) and 
+If you want to generate the documentation, you'll need [Sphinx](http://sphinx-doc.org/) and the [sphinx_bootstrap_theme](https://ryan-roemer.github.io/sphinx-bootstrap-theme/README.html) (and possibly [LaTeX](https://www.latex-project.org/) and
 several sub modules/packages).
 
 ## Documentation
@@ -42,4 +42,3 @@ To know more about the `cygenja` library you can install it and then generate th
 ## License
 
 `cygenja` is licensed under the GLP3.
-

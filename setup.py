@@ -16,7 +16,7 @@ packages_list = ['cygenja',
                  'tests']
 
 CLASSIFIERS = """\
-Development Status :: 0 - Nowhere
+Development Status :: 4 - Beta
 Intended Audience :: Science/Research
 Intended Audience :: Developers
 License :: OSI Approved
@@ -34,25 +34,20 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'DESCRIPTION.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
-setup(name=  'cygenja',
+setup(name='cygenja',
       version=version,
       description='Cython code generator with Jinja2',
       long_description=long_description,
-      #Author details
+      # Author details
       author='Nikolaj van Omme, Sylvain Arreckx, Dominique Orban',
-
       author_email='nikolaj@funartech.com',
-
-      maintainer = "Nikolaj van Omme",
-
-      maintainer_email = "nikolaj@funartech.com",
-
-      url = "https://github.com/PythonOptimizers/cygenja",
-      download_url = "https://github.com/PythonOptimizers/cygenja",
+      maintainer="Nikolaj van Omme",
+      maintainer_email="nikolaj@funartech.com",
+      url="https://github.com/PythonOptimizers/cygenja",
+      download_url="https://github.com/PythonOptimizers/cygenja",
       license='LGPL',
       classifiers=filter(None, CLASSIFIERS.split('\n')),
       requires=['jinja2'],
-      package_dir = {"cygenja": "cygenja"},
+      package_dir={"cygenja": "cygenja"},
       packages=packages_list,
-
-)
+      )
