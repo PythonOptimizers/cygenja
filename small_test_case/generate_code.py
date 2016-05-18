@@ -1,25 +1,25 @@
 #!/usr/bin/env python
-################################################################################
+###############################################################################
 # This script generates all templated code for this small test case.
 # It this the single one script to use before Cythonizing this library.
 # This script is NOT automatically called by setup.py
 #
 # We use our internal library cygenja, using itself the Jinja2 template engine:
 # http://jinja.pocoo.org/docs/dev/
-################################################################################
-from cygenja.generator import Generator
-from jinja2 import Environment, FileSystemLoader
-
+###############################################################################
 import os
 import sys
 import shutil
 import argparse
 import logging
 import ConfigParser
+from jinja2 import Environment, FileSystemLoader
 
-################################################################################
+from cygenja.generator import Generator
+
+###############################################################################
 # INIT
-################################################################################
+###############################################################################
 PATH = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -31,7 +31,8 @@ def make_parser():
         The command line parser.
     """
     basename = os.path.basename(sys.argv[0])
-    parser = argparse.ArgumentParser(description='%s: a code generator' % basename)
+    parser = argparse.ArgumentParser(
+        description='%s: a code generator' % basename)
 
     parser.add_argument("-c", "--clean", help="Clean action files",
                         action='store_true', required=False)
@@ -45,8 +46,6 @@ def make_parser():
                         help='Fnmatch pattern')
     return parser
 
-config = ConfigParser.SafeConfigParser()
-config.read('site.cfg')
 
 INDEX_TYPES = ['INT32', 'INT64']
 
@@ -59,12 +58,12 @@ GENERAL_CONTEXT = {'index_list': INDEX_TYPES,
 
 # ACTION FUNCTION
 def single_generation():
-    """ Only generate one file without any suffix."""
+    """Only generate one file without any suffix."""
     yield '', GENERAL_CONTEXT
 
 
 def generate_following_index_and_element():
-    """ Generate files following the index and element types."""
+    """Generate files following the index and element types."""
     for index in INDEX_TYPES:
         GENERAL_CONTEXT['index'] = index
         for type in ELEMENT_TYPES:
@@ -154,6 +153,10 @@ if __name__ == "__main__":
     parser = make_parser()
     arg_options = parser.parse_args()
 
+    # read config file
+    config = ConfigParser.SafeConfigParser()
+    config.read('site.cfg')
+
     # create logger
     logger = create_logger(config)
 
@@ -177,7 +180,7 @@ if __name__ == "__main__":
     cygenja_engine.register_action('config', '*.*', single_generation)
     cygenja_engine.register_action('small_test_case', '*.*',
                                    single_generation)
-    cygenja_engine.register_action('small_test_case/src', '*.*',
+    cygenja_engine.register_action('small_test_case/src', 'basic.*',
                                    generate_following_index_and_element)
 
     # Generation
