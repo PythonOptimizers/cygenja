@@ -426,7 +426,7 @@ class Generator(object):
 
             with open(generated_filename, 'w') as f:
                 self.log_info('   Generating file %s' % generated_filename)
-                f.write(code_generated)
+                f.write(code_generated.encode('utf8'))
 
     def generate(self, dir_pattern, file_pattern, action_ch='g', recursively=False, force=False):
         """
