@@ -2,7 +2,7 @@
 
 from cygenja.helpers.version import find_version
 
-from distutils.core import setup
+from setuptools import setup
 
 from codecs import open
 from os import path
@@ -47,7 +47,7 @@ setup(name='cygenja',
       download_url="https://github.com/PythonOptimizers/cygenja",
       license='LGPL',
       classifiers=filter(None, CLASSIFIERS.split('\n')),
-      requires=['jinja2'],
+      install_requires=['jinja2'],
       package_dir={"cygenja": "cygenja"},
       packages=packages_list,
       )
